@@ -62,7 +62,7 @@ end
 # Close to single assignment form
 mutable struct FlatAST
     top  # topmost variable(s)
-    input_variables::Set{Symbol}
+    input_variables::Vector{Symbol}
     intermediate::Vector{Symbol}  # generated vars
     code # ::Vector{Assignment}
     variables::Vector{Symbol}  # cleaned version of input_variables
@@ -76,7 +76,7 @@ function Base.show(io::IO, flatAST::FlatAST)
     println(io, "code: ", flatAST.code)
 end
 
-FlatAST() = FlatAST([], Set{Symbol}(), [], [], [])
+FlatAST() = FlatAST([], [], [], [], [])
 
 export FlatAST
 
@@ -420,7 +420,7 @@ function process_operation!(flatAST::FlatAST, ex, var, new_var=nothing)
             add_intermediate!(flatAST, return_args)
             add_intermediate!(flatAST, intermediate)
 
-            top_level_code = FunctionAssignment(symbol(op), top_args, return_args, intermediate)
+            top_level_code = FunctionAssignment(Symbol(op), top_args, return_args, intermediate)
 
             new_var = return_args
 
